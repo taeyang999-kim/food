@@ -2,3 +2,9 @@ streamlit
 scikit-learn
 pandas
 numpy
+gradio
+tensorflow
+pillow
+google-generativeai
+python-dotenv
+opencv-python
