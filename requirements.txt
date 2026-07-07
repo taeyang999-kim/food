@@ -5,3 +5,4 @@ pillow
 google-generativeai
 python-dotenv
 opencv-python-headless
+ollama
