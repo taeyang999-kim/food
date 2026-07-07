@@ -24,7 +24,10 @@ if uploaded_file is not None:
                 print("🔥 이미지 입력 받음")
                 
                 # Ollama가 읽을 수 있도록 이미지를 임시 파일로 저장
+                # Ollama가 읽을 수 있도록 이미지를 임시 파일로 저장 (RGBA -> RGB 변환 포함)
                 temp_path = "temp_input.jpg"
+                if img.mode == "RGBA":
+                    img = img.convert("RGB")
                 img.save(temp_path)
 
                 # Ollama(Llava)가 직접 이미지를 보고 분석 및 설명 생성
