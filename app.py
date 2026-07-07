@@ -5,7 +5,7 @@ from llm import explain_food_from_image
 
 # 1. 페이지 레이아웃 및 제목 설정
 st.set_page_config(page_title="AI Food Analyzer", page_icon="🥗")
-st.title("AI Food Analyzer (Ollama Llava)")
+st.title("AI Food Analyzer (Ollama Llava + Gemma)")
 st.caption("음식 사진을 올리면 로컬 AI가 직접 보고 영양 분석을 해줍니다.")
 
 # 2. 파일 업로더 컴포넌트
@@ -19,22 +19,21 @@ if uploaded_file is not None:
     
     # 분석 시작 버튼
     if st.button("영양 분석 시작 🔥"):
-        with st.spinner("🤖 Ollama(Llava)가 이미지를 분석하는 중입니다..."):
+        with st.spinner("🤖 로컬 Ollama(Llava)가 이미지를 분석하는 중입니다..."):
             try:
                 print("🔥 이미지 입력 받음")
                 
-                # Ollama가 읽을 수 있도록 이미지를 임시 파일로 저장
-                # Ollama가 읽을 수 있도록 이미지를 임시 파일로 저장 (RGBA -> RGB 변환 포함)
+                # RGBA -> RGB 변환 포함 (PNG/캡처본 에러 방지)
                 temp_path = "temp_input.jpg"
                 if img.mode == "RGBA":
                     img = img.convert("RGB")
                 img.save(temp_path)
 
-                # Ollama(Llava)가 직접 이미지를 보고 분석 및 설명 생성
+                # Ollama 파이썬 모듈 호출
                 result = explain_food_from_image(temp_path)
-                print("🤖 Ollama(Llava) 응답 완료")
+                print("🤖 Ollama 응답 완료")
 
-                # 분석 완료 후 임시 파일 깔끔하게 삭제
+                # 임시 파일 삭제
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
 
