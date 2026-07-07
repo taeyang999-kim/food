@@ -1,29 +1,39 @@
 # app.py
 import gradio as gr
-from predict import predict_food
-from llm import explain_food
+import os
+from llm import explain_food_from_image
 
 def analyze(img):
-    label, conf = predict_food(img)
-    explanation = explain_food(label)
+    try:
+        print("🔥 이미지 입력 받음")
+        
+        # Ollama가 읽을 수 있도록 이미지를 임시 파일로 저장
+        temp_path = "temp_input.jpg"
+        img.save(temp_path)
 
-    return f"""
-🍽️ 예측 음식: {label}
-📊 정확도: {conf:.2f}
+        # Ollama(Llava)가 직접 이미지를 보고 분석 및 설명 생성
+        result = explain_food_from_image(temp_path)
+        print("🤖 Ollama(Llava) 응답 완료")
 
----
+        # 분석 완료 후 임시 파일 깔끔하게 삭제
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
-📖 AI 설명:
+        print("✅ 정상 완료")
+        return result
 
-{explanation}
-"""
+    except Exception as e:
+        print("💥 오류 발생:", str(e))
+        return f"❌ 오류 발생\n\n{str(e)}"
 
+# 그라디오 UI 설정
 demo = gr.Interface(
     fn=analyze,
     inputs=gr.Image(type="pil"),
     outputs="text",
-    title="AI Food Analyzer (CNN + Gemini)",
-    description="음식 사진을 올리면 딥러닝이 분석하고 AI가 설명해줍니다."
+    title="AI Food Analyzer (Ollama Llava)",
+    description="음식 사진을 올리면 로컬 AI가 직접 보고 영양 분석을 해줍니다."
 )
 
-demo.launch()
+if __name__ == "__main__":
+    demo.launch()
